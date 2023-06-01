@@ -1,0 +1,192 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+    "scopeName": "source.rwini",
+    "patterns": [
+        { "include": "#comment" },
+        { "include": "#sectionName" },
+        { "include": "#attribute" },
+        { "name": "unknown.rwini", "match": "^.+$" }
+    ],
+    "repository": {
+        "comment": {
+            "name": "comment",
+            "patterns": [
+                {
+                    "name": "comment.singleline.rwini",
+                    "match": "\\s*#.*$"
+                }
+            ]
+        },
+        "sectionName": {
+            "name": "meta.section.rwini",
+            "match": "(\\[)([^_\\[\\]]+)(_([^\\[\\]]+))?(\\])",
+            "captures": {
+                "1": { "name": "meta.brace.square.rwini" },
+                "2": { "name": "entity.name.class.section.rwini" },
+                "4": { "name": "variable.other.constant.section.rwini" },
+                "5": { "name": "meta.brace.square.rwini" }
+            }
+        },
+        "attribute": {
+            "name": "meta.attribute.rwini",
+            "begin": "(.+?)(:)\\s*",
+            "end": "$",
+            "beginCaptures": {
+                "1": { "name": "variable.other.constant.attribute.key.rwini" },
+                "2": { "name": "punctuation.colon.rwini" }
+            },
+            "patterns": [
+                {
+                    "name": "attribute.value.multiline.doublequoted.rwini",
+                    "begin": "\"\"\"",
+                    "end": "\"\"\"",
+                    "beginCaptures": {
+                        "0": { "name": "string.attribute.value.multiline.triple.rwini" }
+                    },
+                    "endCaptures": {
+                        "0": { "name": "string.attribute.value.multiline.triple.rwini" }
+                    },
+                    "patterns": [{ "include": "#attributeValue" }]
+                },
+                {
+                    "name": "attribute.value.multiline.singlequoted.rwini",
+                    "begin": "'''",
+                    "end": "'''",
+                    "beginCaptures": {
+                        "0": { "name": "string.attribute.value.multiline.triple.rwini" }
+                    },
+                    "endCaptures": {
+                        "0": { "name": "string.attribute.value.multiline.triple.rwini" }
+                    },
+                    "patterns": [{ "include": "#attributeValue" }]
+                },
+                {
+
+                    "include": "#attributeValue"
+                }
+            ]
+        },
+        "attributeValue": {
+            "name": "attribute.value.singleline.rwini",
+            "patterns": [
+                {
+                    "name": "constant.numeric.value.rwini",
+                    "match": "(-)?[0-9]+(\\.[0-9]+(f)?)?"
+                },
+                {
+                    "name": "constant.language.booealn.value.rwini",
+                    "match": "(false)|(true)"
+                },
+                {
+                    "include": "#memoryDefine"
+                },
+                {
+                    "name": "logicboolean.rwini",
+                    "begin": "if",
+                    "end": "$",
+                    "beginCaptures": {
+                        "0": { "name": "keyword.logicboolean.rwini" }
+                    },
+                    "patterns": [{ "include": "#expression" }]
+                },
+                {
+                    "include": "#expression"
+                },
+                {
+                    "name": "comma.value.rwini",
+                    "match": ","
+                },
+                {
+                    "name": "string.attribute.value.rwini",
+                    "match": ".+"
+                }
+            ]
+        },
+        "expression": {
+            "name": "expression.value.rwini",
+            "patterns": [
+                {
+                    "name": "constant.numeric.value.rwini",
+                    "match": "(-)?[0-9]+(\\.[0-9]+(f)?)?"
+                },
+                {
+                    "name": "string.quoted.double.value.rwini",
+                    "match": "\".*(?<!\\\\)\""
+                },
+                {
+                    "name": "string.quoted.single.value.rwini",
+                    "match": "'.*(?<!\\\\)'"
+                },
+                { 
+                    "include": "#function" 
+                },
+                {
+                    "include": "#index"
+                },
+                {
+                    "include": "#operator"
+                },
+                {
+                    "name": "constant.language.booealn.value.rwini",
+                    "match": "\\b(false)|(true)\\b"
+                },
+                {
+                    "name": "variable.name.value.rwini",
+                    "match": "\\b[^-\\s\\(\\)\\[\\]\\.+\\*/%'\"<>]+\\b"
+                }
+            ]
+        },
+        "function": {
+            "name": "function.expression.value.rwini",
+            "begin": "([^(\\[,\\s]+)\\(",
+            "end": "\\)",
+            "beginCaptures": {
+                "1": { "name": "entity.name.function.rwini" }
+            },
+            "patterns": [
+                {
+                    "name": "function.parameter.rwini",
+                    "begin": "([^=]+)\\s*=",
+                    "end": "(?=,)|(?=\\))",
+                    "beginCaptures": {
+                        "1": { "name": "variable.parameter.rwini" }
+                    },
+                    "patterns": [{ "include": "#expression" }]
+                },
+                {
+                    "include": "#expression"
+                },
+                {
+                    "name": "comma.value.rwini",
+                    "match": ","
+                }
+            ]
+        },
+        "operator": {
+            "name": "keyword.operator.value.rwini",
+            "patterns": [
+                {
+                    "name": "keyword.operator.simple.value.rwini",
+                    "match": "[-+\\*/%\\.]"
+                },
+                {
+                    "name": "keyword.complex.value.rwini",
+                    "match": "and|or|not"
+                }
+            ]
+        },
+        "index": {
+            "name": "index.expression.value.rwini",
+            "begin": "([^(\\[,\\s]+)\\[",
+            "end": "\\]",
+            "beginCaptures": {
+                "1": { "name": "variable.name.index.rwini" }
+            },
+            "patterns": [{ "include": "#expression" }]
+        },
+        "memoryDefine": {
+            "name": "memory.define.value.rwini",
+            "match": "(number|boolean|string|unit)\\s+[^,\\s]+"
+        }
+    }
+}

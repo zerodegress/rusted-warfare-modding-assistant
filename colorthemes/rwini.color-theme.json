@@ -1,0 +1,10 @@
+{
+    "tokenColors":[
+        {
+            "scope": "keyword.operator",
+            "settings": {
+                "foreground": "#FF0000"
+            }
+        }
+    ]
+}
