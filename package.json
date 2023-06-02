@@ -50,6 +50,7 @@
     "gen-syntaxes": "node ./scripts/genSyntaxes.cjs"
   },
   "devDependencies": {
+    "@types/fs-extra": "^11.0.1",
     "@types/glob": "^8.0.0",
     "@types/mocha": "^10.0.1",
     "@types/node": "16.x",
@@ -65,5 +66,10 @@
     "walkdir": "^0.4.1",
     "webpack": "^5.75.0",
     "webpack-cli": "^5.0.0"
+  },
+  "dependencies": {
+    "fs-extra": "^11.1.1",
+    "vscode-oniguruma": "^1.7.0",
+    "vscode-textmate": "^9.0.0"
   }
 }

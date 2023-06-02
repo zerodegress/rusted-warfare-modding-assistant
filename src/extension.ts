@@ -2,7 +2,12 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 
-import { RwiniCompletionItemProvider } from './language';
+import { rwiniCompletionItemProvider } from './language';
+
+export const RWINI_MODE: vscode.DocumentFilter = {
+	scheme: 'file',
+	language: 'rwini'
+};
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -22,6 +27,12 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 
 	context.subscriptions.push(disposable);
+	context.subscriptions.push(
+		vscode.languages.registerCompletionItemProvider(
+			RWINI_MODE,
+			rwiniCompletionItemProvider,
+		)
+	);
 }
 
 // This method is called when your extension is deactivated

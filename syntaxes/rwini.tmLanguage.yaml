@@ -2,6 +2,7 @@
 scopeName: source.rwini
 patterns:
   - { include: '#comment' }
+  - { include: '#commentSection' }
   - { include: '#section' }
 repository:
   comment:
@@ -9,6 +10,13 @@ repository:
     patterns:
       - name: comment.line.rwini
         match: ^\s*#.*$
+  commentSection:
+    name: comment
+    begin: \[comment_[^\[\]]+\]
+    end: (?=\[([^\[\]]+)\])
+    patterns:
+      - name: comment
+        match: \s*(?!\[).+
   section:
     name: meta.section.rwini
     begin: \[(([^\[\]_]+)(_([^\[\]]+))?)\]
@@ -59,6 +67,7 @@ repository:
       - { include: '#intValue' }
       - { include: '#booleanValue' }
       - { include: '#comma' }
+      - { include: '#logicBoolean' }
       - { include: '#stringValue' }
   valueSingleLine:
     name: value.rwini
@@ -67,6 +76,7 @@ repository:
       - { include: '#intValue' }
       - { include: '#booleanValue' }
       - { include: '#comma' }
+      - { include: '#logicBoolean' }
       - { include: '#stringValue' }
   stringValue:
     name: string.rwini
@@ -80,6 +90,69 @@ repository:
   booleanValue:
     name: constant.language.boolean.rwini
     match: \s*(true)|(false)\s*
+  logicBoolean:
+    name: meta.logicboolean.rwini
+    begin: \s*if
+    end: $
+    beginCaptures:
+      0: { name: keyword.if.rwini }
+    patterns:
+      - { include: '#expression' }
+  expression:
+    name: meta.expression.rwini
+    patterns:
+      - { include: '#opCommon' }
+      - { include: '#opAnd' }
+      - { include: '#opOr' }
+      - { include: '#opNot' }
+      - { include: '#function' }
+      - { include: '#index' }
+      - { include: '#identifier' }
+      - { include: '#dot' }
+  identifier:
+    name: variable.name.rwini
+    match: '[^-\+*/%\(\)\[\],\.\s]+'
+  function:
+    name: meta.function.rwini
+    begin: ([^-\+*/%\(\)\[\],\.\s]+)\(
+    end: \)
+    beginCaptures:
+      1: { name: entity.name.function }
+    patterns:
+      - { include: '#assignment' }
+      - { include: '#expression' }
+      - { include: '#comma' }
+  index:
+    name: meta.function.rwini
+    begin: ([^-\+*/%\(\)\[\],\.\s]+)\[
+    end: \]
+    beginCaptures:
+      1: { name: variable.name.rwini }
+    patterns:
+      - { include: '#expression' }
+  assignment:
+    name: meta.assignment.rwini
+    begin: ([^-\+*/%\(\)\[\],\.\s]+)\s*(=)
+    end: $
+    beginCaptures:
+      1: { name: variable.name.rwini }
+      2: { name: keyword.operator.rwini }
+    patterns:
+      - { include: '#expression' }
+  opAnd:
+    name: keyword.and.rwini
+    match: \band\b
+  opOr:
+    name: keyword.or.rwini
+    match: \bor\b
+  opNot:
+    name: keyword.not.rwini
+    match: \bnot\b
+  opCommon:
+    name: keyword.operator.rwini
+    match: '[-\+*/%]'
   comma:
     name: punctuation.comma.rwini
     match: ','
+  dot:
+    name: punctuation.dot.rwini
