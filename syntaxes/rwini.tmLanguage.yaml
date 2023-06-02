@@ -92,7 +92,7 @@ repository:
     match: \s*(true)|(false)\s*
   logicBoolean:
     name: meta.logicboolean.rwini
-    begin: \s*if
+    begin: \s*if\b
     end: $
     beginCaptures:
       0: { name: keyword.if.rwini }
@@ -107,8 +107,24 @@ repository:
       - { include: '#opNot' }
       - { include: '#function' }
       - { include: '#index' }
+      - { include: '#stringLiteralDouble' }
+      - { include: '#stringLiteralSingle' }
       - { include: '#identifier' }
       - { include: '#dot' }
+  stringLiteralDouble:
+    name: string.literal.rwini
+    begin: '"'
+    end: '"'
+    patterns:
+      - name: string.literal.rwini
+        match: '^[^((?<!\\)")]+$'
+  stringLiteralSingle:
+    name: string.literal.rwini
+    begin: "'"
+    end: "'"
+    patterns:
+      - name: string.literal.rwini
+        match: "^[^((?<!\\)')]+$"
   identifier:
     name: variable.name.rwini
     match: '[^-\+*/%\(\)\[\],\.\s]+'
